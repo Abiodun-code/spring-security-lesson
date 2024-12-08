@@ -1,5 +1,7 @@
 package com.abioduncode.spring_security_lesson.models;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,12 +18,21 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
+
   private String firstName;
+
   private String lastName;
 
   @Column(unique = true)
   private String email;
+
   private String password;
+
+  private boolean emailVerified = false;
+
+  private String otp;
+
+  private LocalDateTime otpExpiry;
 
   // No args constructor
   public User(){
@@ -54,6 +65,10 @@ public class User {
             ", firstName='" + firstName + '\'' +
             ", lastName='" + lastName + '\'' +
             ", email='" + email + '\'' +
+            ", password='" + password + '\'' +
+            ", emailVerified=" + emailVerified +
+            ", otp='" + otp + '\'' +
+            ", otpExpiry=" + otpExpiry +
             '}';
   }
 }

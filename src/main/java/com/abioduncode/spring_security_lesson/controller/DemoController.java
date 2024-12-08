@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.abioduncode.spring_security_lesson.models.Demo;
+import com.abioduncode.spring_security_lesson.models.User;
+import com.abioduncode.spring_security_lesson.repository.UserRepo;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +22,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 public class DemoController {
+
+  @Autowired
+  private UserRepo userRepo;
 
   private List<Demo> demo = new ArrayList<>(List.of(
     new Demo(1, "Book of life", "John doe"),
@@ -30,8 +37,17 @@ public class DemoController {
 
   
   @GetMapping("/")
-  public ResponseEntity<List<Demo>> geetAllDemo() {
-    return new ResponseEntity<>(demo, HttpStatus.OK);
+  public List<Demo> geetAllDemo(String email) {
+    Optional<User> userOption = userRepo.findByEmail(email);
+    if(userOption.isPresent()){
+      User user = userOption.get();
+      if (!user.isEmailVerified()) {
+        throw new RuntimeException("Access denied: Email not verified.");
+      }
+      return demo;
+    }else{
+      throw new RuntimeException("User not found.");
+    }
   }
 
   @PostMapping("/demo")

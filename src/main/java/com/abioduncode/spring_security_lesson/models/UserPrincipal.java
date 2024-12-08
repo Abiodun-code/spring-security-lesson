@@ -2,6 +2,7 @@ package com.abioduncode.spring_security_lesson.models;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class UserPrincipal implements UserDetails {
 
-  private final User user;
+  private User user;
 
   public UserPrincipal(User user){
     this.user = user;

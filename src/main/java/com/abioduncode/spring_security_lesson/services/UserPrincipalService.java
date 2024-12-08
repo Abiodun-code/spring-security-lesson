@@ -21,13 +21,16 @@ public class UserPrincipalService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     // TODO Auto-generated method stub
-    User user = userRepo.findByEmail(email);
+    Optional<User> user = userRepo.findByEmail(email);
 
     if (user == null) {
-      System.out.println("User not found");
+      System.out.println("User not found with email: " + email);
       throw new UsernameNotFoundException("User not found with email: " + email);
     }
-    return new UserPrincipal(user);
+
+    System.out.println("User found: " + user.get());
+
+    return new UserPrincipal(user.get());
   }
   
 }
