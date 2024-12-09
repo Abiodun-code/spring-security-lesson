@@ -20,8 +20,11 @@ import com.abioduncode.spring_security_lesson.services.UserPrincipalService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-  @Autowired
-  private UserPrincipalService userPrincipalService;
+  private final UserPrincipalService userPrincipalService;
+
+  public SecurityConfig(UserPrincipalService userPrincipalService){
+    this.userPrincipalService = userPrincipalService;
+  }
   
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{

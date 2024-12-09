@@ -15,8 +15,11 @@ import com.abioduncode.spring_security_lesson.repository.UserRepo;
 @Service
 public class UserPrincipalService implements UserDetailsService {
 
-  @Autowired
   private UserRepo userRepo;
+
+  public UserPrincipalService(UserRepo userRepo) {
+    this.userRepo = userRepo;
+  }
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

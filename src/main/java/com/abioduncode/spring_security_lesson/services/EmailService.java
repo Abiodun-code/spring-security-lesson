@@ -10,17 +10,21 @@ import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
-  
-  private JavaMailSender emailSender;
 
-  public void sendEmail(String to, String subject, String text) throws MessagingException {
-    MimeMessage message = emailSender.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(message, true);
+    private final JavaMailSender emailSender;
 
-    helper.setTo(to);
-    helper.setSubject(subject);
-    helper.setText(text, true);
+    public EmailService(JavaMailSender emailSender) {
+        this.emailSender = emailSender;
+    }
 
-    emailSender.send(message);
-  }
+    public void sendEmail(String to, String subject, String text) throws MessagingException {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(text, true); // true enables HTML content
+
+        emailSender.send(message);
+    }
 }

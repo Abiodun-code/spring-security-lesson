@@ -22,10 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 public class DemoController {
-
-  @Autowired
-  private UserRepo userRepo;
-
   private List<Demo> demo = new ArrayList<>(List.of(
     new Demo(1, "Book of life", "John doe"),
     new Demo(2, "Great Life", "Lorem Ipsum"),
@@ -37,17 +33,9 @@ public class DemoController {
 
   
   @GetMapping("/")
-  public List<Demo> geetAllDemo(String email) {
-    Optional<User> userOption = userRepo.findByEmail(email);
-    if(userOption.isPresent()){
-      User user = userOption.get();
-      if (!user.isEmailVerified()) {
-        throw new RuntimeException("Access denied: Email not verified.");
-      }
-      return demo;
-    }else{
-      throw new RuntimeException("User not found.");
-    }
+  public List<Demo> geetAllDemo() {
+    return demo;
+    
   }
 
   @PostMapping("/demo")

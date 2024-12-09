@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.abioduncode.spring_security_lesson.dto.VerifyUserDto;
+import com.abioduncode.spring_security_lesson.exceptions.CustomException;
 import com.abioduncode.spring_security_lesson.models.User;
 import com.abioduncode.spring_security_lesson.repository.UserRepo;
 import static com.abioduncode.spring_security_lesson.utils.OTPGenerator.generateOTP;
@@ -19,24 +20,36 @@ public class UserService {
 
   private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-  @Autowired
-  private UserRepo userRepo;
+  private final UserRepo userRepo;
 
-  private EmailService emailService;
- 
-  public User register(User user){
+  private final EmailService emailService;
 
-    String otp = generateOTP();
-
-    user.setPassword(encoder.encode(user.getPassword()));
-    user.setOtp(otp);
-    user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-    user.setEmailVerified(false);
-    // sendVerifyEmail(user);
-    return userRepo.save(user);
+  public UserService(UserRepo userRepo, EmailService emailService){
+    this.userRepo = userRepo;
+    this.emailService = emailService;
   }
 
-  public void verifyUser(VerifyUserDto input) {
+  public User register(User user){
+    try{
+
+      String otp = generateOTP();
+
+      Optional<User> userOptional = userRepo.findByEmail(user.getEmail());
+      if (userOptional.isPresent()) {
+        throw new CustomException("Email is already in use. Please use a different email.");
+      }
+      user.setPassword(encoder.encode(user.getPassword()));
+      user.setOtp(otp);
+      user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+      user.setEmailVerified(false);
+      sendVerifyEmail(user);
+      return userRepo.save(user);
+    }catch(Exception e){
+      throw new CustomException("Failed to register user" + e.getMessage());
+    }
+  }
+
+  public String verifyUser(VerifyUserDto input) {
     Optional<User> userOptional = userRepo.findByEmail(input.getEmail());
 
     if (userOptional.isPresent()) {
@@ -53,20 +66,20 @@ public class UserService {
             user.setOtp(null); // Clear OTP after verification
             user.setOtpExpiry(null);
             userRepo.save(user);
-            throw new RuntimeException("User verified successfully.");
+            return "User verify successfully";
         } else {
             throw new RuntimeException("Invalid OTP.");
         }
     } else {
         throw new RuntimeException("User not found.");
     }
-}
+  }
 
 
 
   public void sendVerifyEmail(User user) {
       // TODO Auto-generated method stub
-      String subject = "Account Verificaation";
+      String subject = "Account Verification";
       String otps =  user.getOtp();
       String htmlMessage = "<html>"
       +"<body style=\"font-family: Arial, sans-serif;\">"
@@ -85,7 +98,7 @@ public class UserService {
         emailService.sendEmail(user.getEmail(), subject, htmlMessage);
       } catch (Exception e) {
         // TODO: handle exception
-        e.printStackTrace();
+        throw new CustomException("Send email cant send " + e.getMessage());
       }
-    }
+  }
 }
