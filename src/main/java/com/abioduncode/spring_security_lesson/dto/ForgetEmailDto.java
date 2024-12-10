@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class VerifyUserDto {
-  String email;
-  Integer otp;
+public class ForgetEmailDto {
+  private String email;
 }

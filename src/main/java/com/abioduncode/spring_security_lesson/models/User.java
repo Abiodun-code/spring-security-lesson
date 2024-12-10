@@ -2,17 +2,19 @@ package com.abioduncode.spring_security_lesson.models;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
 
   @Id
@@ -30,17 +32,20 @@ public class User {
 
   private boolean emailVerified = false;
 
-  private String otp;
+  private Integer otp;
 
   private LocalDateTime otpExpiry;
 
+  @OneToOne(cascade = CascadeType.ALL)
+  private ForgetPassword forgetPassword;
+
   // No args constructor
-  public User(){
+  public User() {
 
   }
 
   // All args constructor
-  public User(int id, String firstName, String lastName, String email, String password){
+  public User(int id, String firstName, String lastName, String email, String password) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -49,26 +54,26 @@ public class User {
   }
 
   // Getter and Setter
-  public String getUsername(){
+  public String getUsername() {
     return email;
   }
 
-  public void setUsername(String email){
+  public void setUsername(String email) {
     this.email = email;
   }
 
   // toString
   @Override
-  public String toString(){
+  public String toString() {
     return "User{" +
-            "id=" + id +
-            ", firstName='" + firstName + '\'' +
-            ", lastName='" + lastName + '\'' +
-            ", email='" + email + '\'' +
-            ", password='" + password + '\'' +
-            ", emailVerified=" + emailVerified +
-            ", otp='" + otp + '\'' +
-            ", otpExpiry=" + otpExpiry +
-            '}';
+        "id=" + id +
+        ", firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", email='" + email + '\'' +
+        ", password='" + password + '\'' +
+        ", emailVerified=" + emailVerified +
+        ", otp='" + otp + '\'' +
+        ", otpExpiry=" + otpExpiry +
+        '}';
   }
 }
