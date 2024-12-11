@@ -3,8 +3,6 @@ package com.abioduncode.spring_security_lesson.services;
 import static com.abioduncode.spring_security_lesson.utils.OTPGenerator.generateOTP;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -25,44 +23,40 @@ public class ForgetPasswordService {
   public ForgetPasswordService(UserRepo userRepo, ForgetPasswordRepo forgetPasswordRepo){
     this.userRepo = userRepo;
     this.forgetPasswordRepo = forgetPasswordRepo;
+
   }
 
-public String generateOtp(ForgetEmailDto forgetEmailDto) {
-    try {
-        Optional<User> userOptional = userRepo.findByEmail(forgetEmailDto.getEmail());
+  public String generateOtp(ForgetEmailDto forgetEmailDto) {
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
+    // Fetch user by email
+    User user = userRepo.findByEmail(forgetEmailDto.getEmail())
+    .orElseThrow(() -> new CustomException("Email not found"));
 
-            // Create a new ForgetPassword entity
-            ForgetPassword forgetPassword = new ForgetPassword();
-
-            // Generate OTP
-            Integer otp = generateOTP();
-            forgetPassword.setOtp(otp);  // Set OTP
-
-            // Set OTP expiry (5 minutes from now)
-            forgetPassword.setOtpExpiry(LocalDateTime.now().plusMinutes(5));
-
-            // Set the bi-directional relationship
-            forgetPassword.setUser(user);
-            user.setForgetPassword(forgetPassword);
-
-            // Save the ForgetPassword entity
-            forgetPasswordRepo.save(forgetPassword);
-
-            // Save the User entity to persist the forget_password_fpid column
-            userRepo.save(user);
-
-            return "Otp sent successfully";
-        } else {
-            throw new CustomException("User not found.");
-        }
-    } catch (Exception e) {
-        // Wrap the exception in your custom exception
-        throw new CustomException("Error occurred while generating OTP: " + e.getMessage());
+    if (!user.isEmailVerified()) {
+     throw new CustomException("Verify your email first.");
     }
-}
+
+    // Check if a ForgetPassword record already exists for this user
+    ForgetPassword forgetPassword = user.getForgetPassword();
+
+    if (forgetPassword == null) {
+        // Create a new ForgetPassword entity
+        forgetPassword = new ForgetPassword();
+        forgetPassword.setUser(user);
+    }
+
+    // Generate OTP
+    Integer otp = generateOTP();
+    forgetPassword.setOtp(otp);
+
+    // Set OTP expiry (10 minutes from now)
+    forgetPassword.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+
+    // Save the ForgetPassword entity
+    forgetPasswordRepo.save(forgetPassword);
+
+    return "Otp sent successfully";
+  }
 
 
 }

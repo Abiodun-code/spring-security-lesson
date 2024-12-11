@@ -14,7 +14,6 @@ import static com.abioduncode.spring_security_lesson.utils.OTPGenerator.generate
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -24,7 +23,6 @@ public class UserService {
   private final UserRepo userRepo;
 
   private final EmailService emailService;
-
 
   public UserService(UserRepo userRepo, EmailService emailService){
     this.userRepo = userRepo;
@@ -39,115 +37,79 @@ public class UserService {
 
   public User register(RegisterDto registerDto) {
 
-    try {
+    // Generate OTP
+    Integer otp = generateOTP();
 
-      // Generate OTP
-      Integer otp = generateOTP();
+    // Check if the email exist
+    boolean existEmail = userRepo.findByEmail(registerDto.getEmail()).isPresent();
 
-      // Check if the email exist
-      Optional<User> userOptional = userRepo.findByEmail(registerDto.getEmail());
-
-      // If email exist you have to use another email
-      if (userOptional.isPresent()) {
-        throw new CustomException("Email already exist.");
-      }
-
-      // Create new user
-      User user = new User(
-        registerDto.getId(),
-        registerDto.getFirstName(),
-        registerDto.getLastName(),
-        registerDto.getEmail(),
-        encoder.encode(registerDto.getPassword())
-      );
-
-      // Set additional fields for the user
-      user.setOtp(otp);
-      user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-      user.setEmailVerified(false);
-
-      // Send verification email
-      // sendVerifyEmail(user);
-
-      // Save and return the user
-      return userRepo.save(user);
-    } catch (Exception e) {
-        throw new CustomException("" + e.getMessage());
+    // If email exist you have to use another email
+    if (existEmail) {
+      throw new CustomException("Email already exist.");
     }
+
+    // Create and populate a new user
+    User user = new User();
+
+    user.setFirstName(registerDto.getFirstName());
+    user.setLastName(registerDto.getLastName());
+    user.setEmail(registerDto.getEmail());
+    user.setPassword(encoder.encode(registerDto.getPassword()));
+    user.setOtp(otp);
+    user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+    user.setEmailVerified(false);
+
+    // Send verification email
+    // sendVerifyEmail(user);
+
+    // Save and return the user
+    return userRepo.save(user);
   }
 
 
   public String verifyUser(VerifyUserDto input) {
 
-    try {
-      // Check if the email exist
-      Optional<User> userOptional = userRepo.findByEmail(input.getEmail());
+    // Check if the email exist
+    User user = userRepo.findByEmail(input.getEmail())
+    .orElseThrow(()-> new CustomException("Email not found"));
 
-      // If email exist it will return the otp
-      if (userOptional.isPresent()) {
+    // Check if OTP has expired
+    if (user.getOtpExpiry() == null || user.getOtpExpiry().isBefore(LocalDateTime.now())) {
+      throw new CustomException("OTP has expired.");
+    }
 
-        User user = userOptional.get();
-
-        // Check if OTP has expired
-        if (user.getOtpExpiry().isBefore(LocalDateTime.now())) {
-          throw new CustomException("OTP has expired.");
-        }
-
-        // Check if OTP matches
-        if (user.getOtp().equals(input.getOtp())) {
-          user.setEmailVerified(true);
-          user.setOtp(null); // Clear OTP after verification
-          user.setOtpExpiry(null);
-          userRepo.save(user);
-          return "User verify successfully";
-        } else {
-            throw new CustomException("Invalid OTP.");
-        }
-      } else {
-        throw new CustomException("User not found.");
-      }
-    } catch (Exception e) {
-      throw new CustomException("" + e.getMessage());
+    // Check if OTP matches
+    if (user.getOtp().equals(input.getOtp())) {
+      user.setEmailVerified(true);
+      user.setOtp(null); // Clear OTP after verification
+      user.setOtpExpiry(null);
+      userRepo.save(user);
+      return "User verify successfully";
+    } else {
+      throw new CustomException("Invalid OTP.");
     }
   }
 
   public User resendVerifyCode(ResendDto resendDto) {
+    // Check if the email exists
+    User user = userRepo.findByEmail(resendDto.getEmail())
+    .orElseThrow(()-> new CustomException("Email not found"));
 
-    try {
-
-      // Check if the email exists
-      Optional<User> optionUser = userRepo.findByEmail(resendDto.getEmail());
-
-      if (optionUser.isPresent()) {
-
-        User user = optionUser.get();
-
-        // Check if the email is already verified
-        if (user.isEmailVerified()) {
-          throw new CustomException("Email is already verified.");
-        }
-
-        // Generate new OTP and update the user
-        Integer otp = generateOTP();
-        user.setOtp(otp);
-        user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-
-        // Send verification email
-        // sendVerifyEmail(user);
-
-        // Save user
-        return userRepo.save(user);
-
-        // return "Verification code resent successfully.";
-      }else{
-        throw new CustomException("Email not found.");
-      }
-      
-    } catch (Exception e) {
-      throw new CustomException("Error: " + e.getMessage());
+    if(user.isEmailVerified()) {
+      throw new CustomException("Email is already verified.");
     }
-}
 
+    // Generate new OTP and update the user
+    Integer otp = generateOTP();
+    user.setOtp(otp);
+    user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+
+    // Send verification email
+    // sendVerifyEmail(user);
+
+    // Save user
+    return userRepo.save(user);
+  }
 
   public void sendVerifyEmail(User user) {
       String subject = "Account Verification";

@@ -22,16 +22,12 @@ public class UserPrincipalService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-    Optional<User> user = userRepo.findByEmail(email);
+    User user = userRepo.findByEmail(email)
+    .orElseThrow(()-> new UsernameNotFoundException("User not found with email" + email));
 
-    if (user == null) {
-      System.out.println("User not found with email: " + email);
-      throw new UsernameNotFoundException("User not found with email: " + email);
-    }
+    System.out.println("User found: " + user);
 
-    System.out.println("User found: " + user.get());
-
-    return new UserPrincipal(user.get());
+    return new UserPrincipal(user);
   }
   
 }
