@@ -13,7 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.abioduncode.spring_security_lesson.services.UserPrincipalService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticate.UserPrincipalService;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +26,7 @@ public class SecurityConfig {
   }
   
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
     return http
       .csrf(Customizer -> Customizer.disable())
       .authorizeHttpRequests(request -> request
@@ -39,7 +39,7 @@ public class SecurityConfig {
   }
 
   @Bean
-  public AuthenticationProvider authenticationProvider(){
+  AuthenticationProvider authenticationProvider(){
     DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
     provider.setUserDetailsService(userPrincipalService);

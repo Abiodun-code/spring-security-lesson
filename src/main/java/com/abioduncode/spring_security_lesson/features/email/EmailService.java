@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.services;
+package com.abioduncode.spring_security_lesson.features.email;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;

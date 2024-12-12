@@ -2,6 +2,8 @@ package com.abioduncode.spring_security_lesson.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +39,7 @@ public class User {
   private LocalDateTime otpExpiry;
 
   @OneToOne(cascade = CascadeType.ALL)
+  @JsonManagedReference
   private ForgetPassword forgetPassword;
 
   // No args constructor

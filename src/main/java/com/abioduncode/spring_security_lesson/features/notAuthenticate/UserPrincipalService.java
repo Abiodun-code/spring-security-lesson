@@ -1,6 +1,4 @@
-package com.abioduncode.spring_security_lesson.services;
-
-import java.util.Optional;
+package com.abioduncode.spring_security_lesson.features.notAuthenticate;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,8 +22,6 @@ public class UserPrincipalService implements UserDetailsService {
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     User user = userRepo.findByEmail(email)
     .orElseThrow(()-> new UsernameNotFoundException("User not found with email" + email));
-
-    System.out.println("User found: " + user);
 
     return new UserPrincipal(user);
   }

@@ -1,4 +1,5 @@
-package com.abioduncode.spring_security_lesson.services;
+package com.abioduncode.spring_security_lesson.features.notAuthenticate.forgetPassword;
+
 
 import static com.abioduncode.spring_security_lesson.utils.OTPGenerator.generateOTP;
 
@@ -6,7 +7,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import com.abioduncode.spring_security_lesson.dto.ForgetEmailDto;
 import com.abioduncode.spring_security_lesson.exceptions.CustomException;
 import com.abioduncode.spring_security_lesson.models.ForgetPassword;
 import com.abioduncode.spring_security_lesson.models.User;
@@ -26,10 +26,10 @@ public class ForgetPasswordService {
 
   }
 
-  public String generateOtp(ForgetEmailDto forgetEmailDto) {
+  public String generateOtp(ForgetPasswordDto forgetPasswordDto) {
 
     // Fetch user by email
-    User user = userRepo.findByEmail(forgetEmailDto.getEmail())
+    User user = userRepo.findByEmail(forgetPasswordDto.getEmail())
     .orElseThrow(() -> new CustomException("Email not found"));
 
     if (!user.isEmailVerified()) {
@@ -51,6 +51,9 @@ public class ForgetPasswordService {
 
     // Set OTP expiry (10 minutes from now)
     forgetPassword.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+
+    // Set Email Verify to true
+    forgetPassword.setEmailVerified(false);
 
     // Save the ForgetPassword entity
     forgetPasswordRepo.save(forgetPassword);

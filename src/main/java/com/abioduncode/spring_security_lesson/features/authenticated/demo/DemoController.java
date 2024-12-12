@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.controller;
+package com.abioduncode.spring_security_lesson.features.authenticated.demo;
 
 import java.util.ArrayList;
 import java.util.List;
