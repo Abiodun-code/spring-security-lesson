@@ -13,16 +13,11 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 @RequestMapping("/auth")
 public class ForgetOtpController {
   
-  private final ForgetOtpService forgetOtpService;
+  
 
-  public ForgetOtpController(ForgetOtpService forgetOtpService){
-    this.forgetOtpService = forgetOtpService;
+  public ForgetOtpController(){
+    
   }
 
-  @PostMapping("/forget-otp/{email}")
-  public ResponseEntity<String> VerifyOtp(@RequestBody ForgetOtpDto forgetOtpDto, @PathVariable String email){
-
-    String forgetMsg = forgetOtpService.verifyOtp(forgetOtpDto, email);
-      return new ResponseEntity<>(forgetMsg, HttpStatus.OK);
-  }
+  
 }

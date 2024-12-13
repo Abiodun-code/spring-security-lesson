@@ -26,15 +26,19 @@ public class ForgetPasswordService {
 
   }
 
-  public String generateOtp(ForgetPasswordDto forgetPasswordDto) {
-
+  public ForgetPassword generateOtp(ForgetPasswordDto forgetPasswordDto) {
+    
     // Fetch user by email
     User user = userRepo.findByEmail(forgetPasswordDto.getEmail())
-    .orElseThrow(() -> new CustomException("Email not found"));
+        .orElseThrow(() -> new CustomException("Email not found"));
 
     if (!user.isEmailVerified()) {
-     throw new CustomException("Verify your email first.");
+        throw new CustomException("Verify your email first.");
     }
+
+    // Ensure user is managed
+    user = userRepo.findById(user.getId())
+        .orElseThrow(() -> new CustomException("User not found"));
 
     // Check if a ForgetPassword record already exists for this user
     ForgetPassword forgetPassword = user.getForgetPassword();
@@ -56,10 +60,6 @@ public class ForgetPasswordService {
     forgetPassword.setEmailVerified(false);
 
     // Save the ForgetPassword entity
-    forgetPasswordRepo.save(forgetPassword);
-
-    return "Otp sent successfully";
+    return forgetPasswordRepo.save(forgetPassword);
   }
-
-
 }

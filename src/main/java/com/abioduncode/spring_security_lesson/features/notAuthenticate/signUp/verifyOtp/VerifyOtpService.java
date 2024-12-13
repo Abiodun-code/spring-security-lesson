@@ -18,10 +18,10 @@ public class VerifyOtpService {
     this.userRepo = userRepo;
   }
 
-  public String verifyEmailWithOtp(VerifyOtpDto input) {
+  public String verifyOtp(VerifyOtpDto input, String email) {
 
     // Check if the email exist
-    User user = userRepo.findByEmail(input.getEmail())
+    User user = userRepo.findByEmail(email)
     .orElseThrow(()-> new CustomException("Email not found"));
 
     // Check if OTP has expired

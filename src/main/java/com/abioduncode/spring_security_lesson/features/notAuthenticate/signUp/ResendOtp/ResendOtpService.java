@@ -22,10 +22,10 @@ public class ResendOtpService {
     this.emailService = emailService;
   }
 
-  public User resendOtpIfExpire(ResendOtpDto resendOtpDto) {
+  public User resendOtp(String email) {
     
     // Check if the email exists
-    User user = userRepo.findByEmail(resendOtpDto.getEmail())
+    User user = userRepo.findByEmail(email)
     .orElseThrow(()-> new CustomException("Email not found"));
 
     if(user.isEmailVerified()) {

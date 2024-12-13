@@ -32,11 +32,6 @@ public class ForgetResendService {
     // Check if a ForgetPassword record already exists for this user
     ForgetPassword forgetPassword = user.getForgetPassword();
 
-    //  if (forgetPassword == null) {
-    //     // Create a new ForgetPassword entity
-    //     forgetPassword = new ForgetPassword();
-    //     forgetPassword.setUser(user);
-    // }
 
     // Generate new OTP and update the user
     Integer otp = generateOTP();
