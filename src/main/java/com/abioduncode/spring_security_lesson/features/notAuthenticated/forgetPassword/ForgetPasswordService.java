@@ -1,5 +1,4 @@
-package com.abioduncode.spring_security_lesson.features.notAuthenticate.forgetPassword;
-
+package com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword;
 
 import static com.abioduncode.spring_security_lesson.utils.OTPGenerator.generateOTP;
 
@@ -27,7 +26,6 @@ public class ForgetPasswordService {
   }
 
   public ForgetPassword generateOtp(ForgetPasswordDto forgetPasswordDto) {
-    
     // Fetch user by email
     User user = userRepo.findByEmail(forgetPasswordDto.getEmail())
         .orElseThrow(() -> new CustomException("Email not found"));
@@ -36,30 +34,27 @@ public class ForgetPasswordService {
         throw new CustomException("Verify your email first.");
     }
 
-    // Ensure user is managed
+    // Ensure the User is managed
     user = userRepo.findById(user.getId())
         .orElseThrow(() -> new CustomException("User not found"));
 
-    // Check if a ForgetPassword record already exists for this user
+    // Create or update ForgetPassword
     ForgetPassword forgetPassword = user.getForgetPassword();
 
     if (forgetPassword == null) {
-        // Create a new ForgetPassword entity
         forgetPassword = new ForgetPassword();
-        forgetPassword.setUser(user);
+        forgetPassword.setUser(user); // Ensure the relationship
+        user.setForgetPassword(forgetPassword);
     }
 
-    // Generate OTP
-    Integer otp = generateOTP();
-    forgetPassword.setOtp(otp);
-
-    // Set OTP expiry (10 minutes from now)
+    // Generate OTP and set expiry
+    forgetPassword.setOtp(generateOTP());
     forgetPassword.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-
-    // Set Email Verify to true
     forgetPassword.setEmailVerified(false);
 
-    // Save the ForgetPassword entity
-    return forgetPasswordRepo.save(forgetPassword);
+    // Save User and ForgetPassword
+    return userRepo.save(user).getForgetPassword();
   }
+
+
 }

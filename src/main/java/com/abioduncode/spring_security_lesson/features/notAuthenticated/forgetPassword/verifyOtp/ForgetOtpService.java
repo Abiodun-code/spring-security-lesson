@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.features.notAuthenticate.forgetPassword.verifyOtp;
+package com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.verifyOtp;
 
 import java.time.LocalDateTime;
 

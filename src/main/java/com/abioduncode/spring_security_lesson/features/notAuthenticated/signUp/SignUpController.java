@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.features.notAuthenticate.signUp;
+package com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.abioduncode.spring_security_lesson.features.notAuthenticate.signUp.ResendOtp.ResendOtpDto;
-import com.abioduncode.spring_security_lesson.features.notAuthenticate.signUp.ResendOtp.ResendOtpService;
-import com.abioduncode.spring_security_lesson.features.notAuthenticate.signUp.verifyOtp.VerifyOtpDto;
-import com.abioduncode.spring_security_lesson.features.notAuthenticate.signUp.verifyOtp.VerifyOtpService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.ResendOtp.ResendOtpService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.verifyOtp.VerifyOtpDto;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.verifyOtp.VerifyOtpService;
 import com.abioduncode.spring_security_lesson.models.User;
 
 @RestController

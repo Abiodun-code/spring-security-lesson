@@ -38,7 +38,7 @@ public class User {
 
   private LocalDateTime otpExpiry;
 
-  @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @OneToOne(cascade = CascadeType.MERGE)
   @JsonManagedReference
   private ForgetPassword forgetPassword;
 

@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.features.notAuthenticate.signUp.ResendOtp;
+package com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.ResendOtp;
 
 import java.time.LocalDateTime;
 

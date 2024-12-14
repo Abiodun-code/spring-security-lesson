@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.features.notAuthenticate.forgetPassword.ChangePassword;
+package com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.ChangePassword;
 
 import java.util.Objects;
 

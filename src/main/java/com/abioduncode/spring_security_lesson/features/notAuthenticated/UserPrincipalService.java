@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.features.notAuthenticate;
+package com.abioduncode.spring_security_lesson.features.notAuthenticated;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

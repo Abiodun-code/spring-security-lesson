@@ -12,8 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.abioduncode.spring_security_lesson.features.notAuthenticate.UserPrincipalService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.UserPrincipalService;
 
 @Configuration
 @EnableWebSecurity
@@ -21,8 +22,11 @@ public class SecurityConfig {
 
   private final UserPrincipalService userPrincipalService;
 
-  public SecurityConfig(UserPrincipalService userPrincipalService){
+  private final JwtConfig jwtConfig;
+
+  public SecurityConfig(UserPrincipalService userPrincipalService, JwtConfig jwtConfig){
     this.userPrincipalService = userPrincipalService;
+    this.jwtConfig = jwtConfig;
   }
   
   @Bean
@@ -34,6 +38,7 @@ public class SecurityConfig {
       .anyRequest().authenticated())
       .httpBasic(Customizer.withDefaults())
       .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+      .addFilterBefore(jwtConfig, UsernamePasswordAuthenticationFilter.class)
       .build();
     
   }

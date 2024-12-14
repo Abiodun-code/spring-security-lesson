@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.features.notAuthenticate.forgetPassword;
+package com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword;
 
 import lombok.Getter;
 import lombok.Setter;
