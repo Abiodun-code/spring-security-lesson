@@ -36,7 +36,7 @@ public class ForgetOtpService {
       throw new CustomException("OTP has expired.");
     }
 
-    if (forgetPassword.getOtp().equals(forgetPassword.getOtp())) {
+    if (forgetPassword.getOtp().equals(forgetOtpDto.getOtp())) {
       forgetPassword.setEmailVerified(true);
       forgetPassword.setOtp(null);
       forgetPassword.setOtpExpiry(null);

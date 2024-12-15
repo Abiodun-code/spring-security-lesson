@@ -1,7 +1,5 @@
 package com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp;
 
-import java.time.LocalDateTime;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +7,7 @@ import com.abioduncode.spring_security_lesson.exceptions.CustomException;
 import com.abioduncode.spring_security_lesson.features.email.EmailService;
 import com.abioduncode.spring_security_lesson.models.User;
 import com.abioduncode.spring_security_lesson.repository.UserRepo;
-import static com.abioduncode.spring_security_lesson.utils.OTPGenerator.generateOTP;
+
 
 @Service
 public class SignUpService {
@@ -27,9 +25,6 @@ public class SignUpService {
 
   public User signUp(SignUpDto signUpDto) {
 
-    // Generate OTP
-    Integer otp = generateOTP();
-
     // Check if the email exist
     boolean existEmail = userRepo.findByEmail(signUpDto.getEmail()).isPresent();
 
@@ -41,13 +36,13 @@ public class SignUpService {
     // Create and populate a new user
     User user = new User();
 
-    user.setFirstName(signUpDto.getFirstName());
-    user.setLastName(signUpDto.getLastName());
+    // user.setFirstName(signUpDto.getFirstName());
+    // user.setLastName(signUpDto.getLastName());
     user.setEmail(signUpDto.getEmail());
     user.setPassword(encoder.encode(signUpDto.getPassword()));
-    user.setOtp(otp);
-    user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
-    user.setEmailVerified(false);
+    // user.setOtp(otp);
+    // user.setOtpExpiry(LocalDateTime.now().plusMinutes(10));
+    // user.setEmailVerified(false);
 
     // Send verification email
     // sendVerifyEmail(user);

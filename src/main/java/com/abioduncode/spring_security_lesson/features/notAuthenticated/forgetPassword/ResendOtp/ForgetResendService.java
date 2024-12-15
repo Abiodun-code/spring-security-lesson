@@ -1,4 +1,4 @@
-package com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.ResendOtp;
+package com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.resendOtp;
 
 import static com.abioduncode.spring_security_lesson.utils.OTPGenerator.generateOTP;
 

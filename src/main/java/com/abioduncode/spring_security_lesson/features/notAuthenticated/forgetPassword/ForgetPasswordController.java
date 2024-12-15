@@ -2,9 +2,9 @@ package com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetP
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.ChangePassword.ChangePasswordDto;
-import com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.ChangePassword.ChangePasswordService;
-import com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.ResendOtp.ForgetResendService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.changePassword.ChangePasswordDto;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.changePassword.ChangePasswordService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.resendOtp.ForgetResendService;
 import com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.verifyOtp.ForgetOtpDto;
 import com.abioduncode.spring_security_lesson.features.notAuthenticated.forgetPassword.verifyOtp.ForgetOtpService;
 import com.abioduncode.spring_security_lesson.models.ForgetPassword;

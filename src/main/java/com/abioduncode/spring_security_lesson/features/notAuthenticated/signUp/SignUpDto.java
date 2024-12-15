@@ -7,9 +7,9 @@ public class SignUpDto {
 
   private int id;
 
-  private String firstName;
+  // private String firstName;
 
-  private String lastName;
+  // private String lastName;
 
   private String email;
 

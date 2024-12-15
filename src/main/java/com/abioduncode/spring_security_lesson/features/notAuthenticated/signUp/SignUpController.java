@@ -3,12 +3,17 @@ package com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.ResendOtp.ResendOtpService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.firstNameUpdate.FirstUpdateDto;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.firstNameUpdate.FirstUpdateService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.lastNameUpdate.LastUpdateDto;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.lastNameUpdate.LastUpdateService;
+import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.resendOtp.ResendOtpService;
 import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.verifyOtp.VerifyOtpDto;
 import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.verifyOtp.VerifyOtpService;
 import com.abioduncode.spring_security_lesson.models.User;
@@ -23,10 +28,16 @@ public class SignUpController {
 
   private final ResendOtpService resendOtpService;
 
-  public SignUpController(SignUpService signUpService,VerifyOtpService verifyOtpService,ResendOtpService resendOtpService){
+  private final FirstUpdateService firstUpdateService;
+
+  private final LastUpdateService lastUpdateService;
+
+  public SignUpController(SignUpService signUpService,VerifyOtpService verifyOtpService,ResendOtpService resendOtpService, FirstUpdateService firstUpdateService,LastUpdateService lastUpdateService){
     this.signUpService = signUpService;
     this.verifyOtpService = verifyOtpService;
     this.resendOtpService = resendOtpService;
+    this.firstUpdateService = firstUpdateService;
+    this.lastUpdateService = lastUpdateService;
   }
 
   @PostMapping("/sign-up")
@@ -51,5 +62,22 @@ public class SignUpController {
     User resendMsg = resendOtpService.resendOtp(email);
 
     return new ResponseEntity<>(resendMsg, HttpStatus.CREATED);
+  }
+
+
+  @PutMapping("/first-update/{email}")
+  public ResponseEntity<?> firstUpdate(@RequestBody FirstUpdateDto firstUpdateDto, @PathVariable String email){
+
+    User firstUpdateMsg = firstUpdateService.firstNameUpdate(firstUpdateDto, email);
+    
+    return new ResponseEntity<>(firstUpdateMsg, HttpStatus.OK);
+  }
+
+  @PutMapping("/last-update/{email}")
+  public ResponseEntity<?> lastUpdate(@RequestBody LastUpdateDto lastUpdateDto, @PathVariable String email){
+
+    User lastUpdateMsg = lastUpdateService.lastNameUpdate(lastUpdateDto, email);
+    
+    return new ResponseEntity<>(lastUpdateMsg, HttpStatus.OK);
   }
 }
