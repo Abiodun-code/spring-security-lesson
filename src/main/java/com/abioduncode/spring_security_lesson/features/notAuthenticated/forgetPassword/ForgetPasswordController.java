@@ -11,6 +11,7 @@ import com.abioduncode.spring_security_lesson.models.ForgetPassword;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class ForgetPasswordController {
 
   private final ForgetPasswordService forgetPasswordService;

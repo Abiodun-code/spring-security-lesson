@@ -9,11 +9,11 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @RestController
 @RequestMapping("/auth")
@@ -37,9 +37,11 @@ public class SignInController {
   }
 
   @GetMapping("/refresh-token/{refreshToken}")
-    public ResponseEntity<Map<String, String>> refreshToken(@PathVariable String refreshToken) {
-      Map<String, String> tokens = refreshTokenService.refreshAccessToken(refreshToken);
-      return ResponseEntity.ok(tokens);
-    }
+  public ResponseEntity<Map<String, String>> refreshToken(@PathVariable String refreshToken) {
+    
+    Map<String, String> tokens = refreshTokenService.refreshAccessToken(refreshToken);
+    
+    return ResponseEntity.ok(tokens);
+  }
   
 }

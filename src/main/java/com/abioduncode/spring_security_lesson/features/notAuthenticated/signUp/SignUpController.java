@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.abioduncode.spring_security_lesson.features.notAuthenticated.signUp.firstNameUpdate.FirstUpdateDto;
@@ -20,6 +21,7 @@ import com.abioduncode.spring_security_lesson.models.User;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class SignUpController {
 
   private final SignUpService signUpService;
