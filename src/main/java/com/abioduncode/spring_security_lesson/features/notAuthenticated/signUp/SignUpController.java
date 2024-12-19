@@ -21,7 +21,6 @@ import com.abioduncode.spring_security_lesson.models.User;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin
 public class SignUpController {
 
   private final SignUpService signUpService;

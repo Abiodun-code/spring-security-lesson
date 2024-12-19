@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin
 public class ForgetPasswordController {
 
   private final ForgetPasswordService forgetPasswordService;

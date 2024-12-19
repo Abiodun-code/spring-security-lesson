@@ -62,14 +62,14 @@ public class SecurityConfig {
     return authenticationConfiguration.getAuthenticationManager();
   }
 
-  @Bean
-  public CorsConfigurationSource corsConfigurationSource(){
-    CorsConfiguration corsConfiguration = new CorsConfiguration();
-    corsConfiguration.setAllowedOrigins(Arrays.asList("exp://192.168.43.134:8081"));
-    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/**", corsConfiguration);
-    return source;
+  // @Bean
+  // public CorsConfigurationSource corsConfigurationSource(){
+  //   CorsConfiguration corsConfiguration = new CorsConfiguration();
+  //   corsConfiguration.setAllowedOrigins(Arrays.asList("exp://192.168.43.134:8081"));
+  //   corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+  //   UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+  //   source.registerCorsConfiguration("/**", corsConfiguration);
+  //   return source;
 
-  }
+  // }
 }
