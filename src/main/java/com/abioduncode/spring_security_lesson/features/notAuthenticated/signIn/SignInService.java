@@ -27,36 +27,35 @@ public class SignInService {
   @Autowired
   private AuthenticationManager authenticationManager;
 
-  public SignInService( JwtService jwtService, UserRepo userRepo) {
+  public SignInService(JwtService jwtService, UserRepo userRepo) {
     this.jwtService = jwtService;
     this.userRepo = userRepo;
   }
 
-  public Map<String, String> signIn(SignInDto signInDto) {
+  public Map<String, Object> signIn(SignInDto signInDto) {
 
-    User users = userRepo.findByEmail(signInDto.getEmail())
-    .orElseThrow(()-> new CustomException("Email not found"));
+    User user = userRepo.findByEmail(signInDto.getEmail())
+      .orElseThrow(() -> new CustomException("Email not found"));
 
-    if (!encoder.matches(signInDto.getPassword(), users.getPassword())) {
-      throw new  CustomException("Invalid password");
+    if (!encoder.matches(signInDto.getPassword(), user.getPassword())) {
+      throw new CustomException("Invalid password");
     }
+
     Authentication authentication = authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword()));
+      new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword()));
 
     if (authentication.isAuthenticated()) {
       String accessToken = jwtService.generateToken(signInDto.getEmail());
       String refreshToken = jwtService.generateRefreshToken(signInDto.getEmail());
 
-      Map<String, String> tokens = new HashMap<>();
-      tokens.put("email", users.getEmail());
-      tokens.put("password", users.getPassword());
-      tokens.put("accessToken", accessToken);
-      tokens.put("refreshToken", refreshToken);
+      Map<String, Object> response = new HashMap<>();
+      response.put("user", user);  // This will include the full user information, minus the password
+      response.put("accessToken", accessToken);
+      response.put("refreshToken", refreshToken);
 
-      return tokens;
-    }else{
+      return response;
+    } else {
       throw new CustomException("Authentication Failed");
     }
   }
 }
-

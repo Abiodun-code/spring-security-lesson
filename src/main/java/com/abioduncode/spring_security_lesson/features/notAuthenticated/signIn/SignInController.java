@@ -31,7 +31,7 @@ public class SignInController {
   @PostMapping("/sign-in")
   public ResponseEntity<?> signIn(@RequestBody SignInDto signInDto) {
     
-    Map<String, String> tokens = signInService.signIn(signInDto); // Returns accessToken and refreshToken
+    Map<String, Object> tokens = signInService.signIn(signInDto); // Returns accessToken and refreshToken
     
     return new ResponseEntity<>(tokens, HttpStatus.OK);
   }
