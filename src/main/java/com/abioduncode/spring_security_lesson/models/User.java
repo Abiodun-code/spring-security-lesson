@@ -44,6 +44,11 @@ public class User {
   @JsonManagedReference
   private ForgetPassword forgetPassword;
 
+  @OneToOne(cascade = CascadeType.MERGE)
+  @JoinColumn(name = "im_id", referencedColumnName = "imId")
+  @JsonManagedReference
+  private Image image;
+
   // No args constructor
   public User() {
 
