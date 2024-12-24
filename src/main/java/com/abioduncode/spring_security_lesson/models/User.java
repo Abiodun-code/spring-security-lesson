@@ -1,6 +1,7 @@
 package com.abioduncode.spring_security_lesson.models;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -11,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -39,6 +41,8 @@ public class User {
 
   private LocalDateTime otpExpiry;
 
+  private Double balance;
+
   @OneToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "fp_id", referencedColumnName = "fpid")
   @JsonManagedReference
@@ -48,6 +52,10 @@ public class User {
   @JoinColumn(name = "im_id", referencedColumnName = "imId")
   @JsonManagedReference
   private Image image;
+
+  @OneToMany(mappedBy = "users", cascade = CascadeType.MERGE)
+  @JsonManagedReference
+  private List<Payment> payment;
 
   // No args constructor
   public User() {
@@ -84,6 +92,7 @@ public class User {
         ", emailVerified=" + emailVerified +
         ", otp='" + otp + '\'' +
         ", otpExpiry=" + otpExpiry +
+        ", balance=" + balance +
         '}';
   }
 }
