@@ -1,12 +1,11 @@
 package com.abioduncode.spring_security_lesson.features.authenticated.payment;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.abioduncode.spring_security_lesson.exceptions.CustomException;
 import com.abioduncode.spring_security_lesson.models.Payment;
 import com.abioduncode.spring_security_lesson.models.User;
 import com.abioduncode.spring_security_lesson.repository.PaymentRepo;
@@ -16,63 +15,51 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PaymentService {
 
     private final PaymentRepo paymentRepo;
     private final UserRepo userRepo;
 
+    @Value("${stripe.secret.key}")
+    private String stripeSecretKey;
+
     public PaymentService(PaymentRepo paymentRepo, UserRepo userRepo) {
         this.paymentRepo = paymentRepo;
         this.userRepo = userRepo;
     }
 
-    @Value("${stripe.secret.key}")
-    private String StripeSecretKey;
+    @Transactional // Ensures the User is attached to the persistence context
+    public PaymentIntent createPaymentIntent(double amount, String email) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
 
-    // Creates a payment intent on Stripe
-    public PaymentIntent createPaymentIntent(double amount) throws StripeException {
-        Stripe.apiKey = StripeSecretKey;
+        // Retrieve the user from the database
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new CustomException("User with email " + email + " not found"));
+
+        // Create PaymentIntent on Stripe
         PaymentIntentCreateParams createParams = PaymentIntentCreateParams.builder()
                 .setAmount((long) (amount * 100)) // Convert amount to cents
                 .setCurrency("usd")
+                .putMetadata("user_email", user.getEmail()) // Add metadata for traceability
                 .build();
 
-        return PaymentIntent.create(createParams);
-    }
+        PaymentIntent paymentIntent = PaymentIntent.create(createParams);
 
-    // Confirms the payment with the payment method
-    public PaymentIntent confirmPayment(String paymentIntentId, String paymentMethodId, User user) throws StripeException {
-    Stripe.apiKey = StripeSecretKey;
-
-    // Retrieve the existing PaymentIntent from Stripe
-    PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
-
-    // Confirm the PaymentIntent with the payment method
-    Map<String, Object> confirmParams = new HashMap<>();
-    confirmParams.put("payment_method", paymentMethodId);
-
-    paymentIntent = paymentIntent.confirm(confirmParams);
-
-    // Process the payment if the confirmation is successful
-    if ("succeeded".equals(paymentIntent.getStatus())) {
-        processPayment(paymentIntent, user, paymentIntent.getAmount() / 100.0); // Convert cents to dollars
-    }
-
-    return paymentIntent;
-}
-
-    // Process the payment, update user's balance and save the transaction
-    public void processPayment(PaymentIntent paymentIntent, User user, double amount) {
+        // Save the Payment entity and associate it with the User
         Payment payment = new Payment();
-        payment.setUser(user);
+        payment.setUser(user); // User is attached because of @Transactional
         payment.setAmount(amount);
-        payment.setType("Deposit");  // This could be dynamic based on the payment flow
+        payment.setType("Deposit");
         payment.setTimeStamp(new Date());
-
-        // Update user's balance based on the payment amount
-        user.setBalance(user.getBalance() + amount);  // For deposit, increase the balance
         paymentRepo.save(payment);
+
+        // Update the user's balance
+        user.setBalance(user.getBalance() == null ? amount : user.getBalance() + amount);
         userRepo.save(user);
+
+        return paymentIntent;
     }
 }

@@ -49,7 +49,7 @@ public class SignInService {
       String refreshToken = jwtService.generateRefreshToken(signInDto.getEmail());
 
       Map<String, Object> response = new HashMap<>();
-      response.put("user", user);  // This will include the full user information, minus the password
+      response.put("user", user);  // This will include the full user information
       response.put("accessToken", accessToken);
       response.put("refreshToken", refreshToken);
 
