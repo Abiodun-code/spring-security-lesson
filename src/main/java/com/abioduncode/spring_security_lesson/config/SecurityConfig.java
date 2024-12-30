@@ -15,6 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.abioduncode.spring_security_lesson.features.notAuthenticated.UserPrincipalService;
+import com.abioduncode.spring_security_lesson.models.UserPrincipal;
 
 @Configuration
 @EnableWebSecurity
@@ -56,5 +57,4 @@ public class SecurityConfig {
   AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
     return authenticationConfiguration.getAuthenticationManager();
   }
-
 }

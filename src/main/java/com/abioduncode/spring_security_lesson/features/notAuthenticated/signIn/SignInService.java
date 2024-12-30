@@ -42,7 +42,7 @@ public class SignInService {
     }
 
     Authentication authentication = authenticationManager.authenticate(
-      new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword()));
+    new UsernamePasswordAuthenticationToken(signInDto.getEmail(), signInDto.getPassword()));
 
     if (authentication.isAuthenticated()) {
       String accessToken = jwtService.generateToken(signInDto.getEmail());
@@ -53,7 +53,7 @@ public class SignInService {
       response.put("accessToken", accessToken);
       response.put("refreshToken", refreshToken);
 
-      return response;
+      return response; 
     } else {
       throw new CustomException("Authentication Failed");
     }
